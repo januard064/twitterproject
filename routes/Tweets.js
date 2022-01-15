@@ -7,9 +7,9 @@ const res = require('express/lib/response');
 //post twitter
 router.post("/", async (req, res) => {
     try {
-      const { tweets, tweets_time, tweets_name, tweets_email } = req.body.tweet;
+      const { tweets, tweets_time, tweet_name, tweet_email } = req.body.tweet;
       const newTweet = await pool.query("INSERT INTO tweet(tweets, tweets_time, tweet_name, tweet_email) VALUES($1, $2, $3, $4) RETURNING *",
-      [tweets, tweets_time, tweets_name, tweets_email])
+      [tweets, tweets_time, tweet_name, tweet_email])
       
       res.json(newTweet.rows[0]);
       console.log(`berhasil`,req.body)
@@ -57,7 +57,7 @@ router.post("/", async (req, res) => {
   router.put("/:id", async(req, res)=> {
     try {
       const {id} = req.params
-      const { tweets, tweets_time, tweets_name, tweets_email } = req.body.tweet;
+      const { tweets } = req.body.tweet;
       const updateTweet = await pool.query(
         "UPDATE tweet SET tweets = $1 WHERE tweet_id = $2", [tweets, id]
       );
