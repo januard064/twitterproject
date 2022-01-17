@@ -103,6 +103,19 @@ router.post("/register",validInfo, async (req, res) => {
   
   })
 
+  router.get("/userdata", authorization, async (req, res) => {
+    try {
+
+      const user = await pool.query("SELECT user_name FROM newuser WHERE user_id = $1",[req.user])
+
+      res.json(user.rows[0])
+
+    } catch (err) {
+      console.error(err.message)
+      res.status(500).json("server error")
+    }
+  })
+
   router.get("/is-verify", authorization ,async(req, res) => {
     try {
       res.json(true)
