@@ -11,26 +11,14 @@ const bcrypt = require('bcrypt')
 
 //register-post data
 router.post("/register",validInfo, async (req, res) => {
-    // try {
-    //   const { email, password } = req.body.user;
-    //   const newUser = await pool.query("INSERT INTO usertwitter(email, password) VALUES($1, $2) RETURNING *",
-    //   [email, password])
-      
-    //   res.json(newUser.rows[0]);
-    //   console.log(`berhasil`,req.body)
-    // } catch (err) {
-    //   console.log(err.message)
-    // }
-
     try {
       
       // destruct req.body
       const {email, user_name ,password} = req.body
 
-      // check if user exist
+      // check user exist in database (if the user has already exist throw to error)
       const user =  await pool.query("SELECT * FROM newuser WHERE email = $1", [email])
 
-      // res.json(user.rows)
       if(user.rows.length !== 0){
        return res.status(401).send("user has already exist")
       }
@@ -41,10 +29,10 @@ router.post("/register",validInfo, async (req, res) => {
 
       const bcryptPassword = await bcrypt.hash(password, salt)
 
-      //enter new user
+      //enter new user to database
       const newUser = await pool.query("INSERT INTO newuser(email, user_name ,password) VALUES($1, $2, $3) RETURNING *", [email, user_name, bcryptPassword])
 
-      //generate our jwt token
+      //generate jwt token
       const token = jwtGenerator(newUser.rows[0].user_id);
 
       res.json({token})
@@ -61,17 +49,7 @@ router.post("/register",validInfo, async (req, res) => {
   
   //for Login
   router.post("/login",validInfo, async(req, res) => {
-      // const { email, password } = req.body.user;
-      // const user = await pool.query("SELECT * FROM usertwitter WHERE email=$1 and password=$2", [email, password])
-      
-      // if(user.rows.length > 0){
-      //   // res.json();
-      //   res.send(user)
-      //   console.log(`terdaftar`, user.rows[0])
-      // } else{
-      //   console.log("tidak terdaftar")
-      //   res.send('notvalid')
-      // }
+     
       try {
          // destructur req.body
         const { email, password} = req.body
@@ -103,6 +81,8 @@ router.post("/register",validInfo, async (req, res) => {
   
   })
 
+
+  // get usrdata  which will be sent or mke data to public
   router.get("/userdata", authorization, async (req, res) => {
     try {
 
@@ -116,6 +96,10 @@ router.post("/register",validInfo, async (req, res) => {
     }
   })
 
+
+
+// use for verify the jwt - make jwt authorized even if the page is refreshed
+// using funcion authorization that define at the other file
   router.get("/is-verify", authorization ,async(req, res) => {
     try {
       res.json(true)
