@@ -3,10 +3,11 @@ const jwt = require("jsonwebtoken");
 require('dotenv').config();
 
 function jwtGenerator(user_id){
+     //make user_id as unique variable for generate jwt
     const payload = {
         user: user_id
     }
-    //make user_id as unique variable for generate jwt
+    // membentuk token dengan data yang dikirimkan(payload) adalah id dari user dan secret key yang dimbil dari .env 
     return jwt.sign(payload, process.env.jwtSecret, {expiresIn: 60 * 60})
 }
 

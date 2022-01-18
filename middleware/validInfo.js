@@ -11,14 +11,14 @@ module.exports = (req, res, next) => {
         if(![email, user_name, password].every(Boolean)){
             return res.status(401).json("Missing Credential")
         } else if(!validEmail(email)){
-            return res.status(401).json("invalid email")
+            return res.status(401).json("Invalid email")
         }
     } 
     else if(req.path === "/login"){
         if(![email, password].every(Boolean)){
             return res.status(401).json("Missing Credential")
         } else if(!validEmail(email)){
-            return res.status(401).json("invalid email")
+            return res.status(401).json("Invalid email")
         }
     }
     next()

@@ -20,7 +20,7 @@ router.post("/register",validInfo, async (req, res) => {
       const user =  await pool.query("SELECT * FROM newuser WHERE email = $1", [email])
 
       if(user.rows.length !== 0){
-       return res.status(401).send("user has already exist")
+       return res.status(401).json("user has already exist")
       }
 
       //bcrypt password
@@ -57,7 +57,7 @@ router.post("/register",validInfo, async (req, res) => {
         // check if user exist
         const user = await pool.query("SELECT * FROM newuser WHERE email = $1", [email])
         if(user.rows.length === 0){
-          return res.status(401).send("password or email is incorrect")
+          return res.status(401).json("account does not exist")
         }
 
         // check if incoming password is the same with passwotd in dtabase
@@ -65,7 +65,7 @@ router.post("/register",validInfo, async (req, res) => {
 
         // console.log(validPassword)
         if(!validPassword){
-          return res.status(401).json('password or email is incorrect')
+          return res.status(401).json('Password or email is incorrect')
         }
 
         // genrate token
